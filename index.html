@@ -91,7 +91,9 @@
 			let currentPly = 0;
 			let position = new THREE.Vector3(-0.5, -0.5, 0);
 			let position2 = new THREE.Vector3(0.5, -0.5, 0);
-			let rotation = 0;
+			let rotation = [];
+			rotation.x = 0;
+			rotation.y = 0;
 			let scale = 1.5;
 			let mesh, mesh2;
 			
@@ -133,6 +135,24 @@
 
 				plane.receiveShadow = true;
 
+				function changeModel() {
+	
+					effectController.step = 1;
+					currentIter = effectController.step;
+					textTag.innerText = "iter #0";
+
+					for( let i = 0; i < models.length; i++ ) {
+
+						let selectedObject = scene.getObjectByName(models[i]);
+						scene.remove( selectedObject );
+					}
+					
+					let selectedObject2 = scene.getObjectByName('ply1');
+					scene.remove( selectedObject2 );
+					gui.updateDisplay();
+					loadPly();
+					loadPly2();
+				}
 
 				// PLY model files
 				var loader = new PLYLoader();
@@ -150,7 +170,8 @@
 						mesh = new THREE.Mesh( geometry, material );
 						mesh.name = 'ply1';
 						mesh.position.copy(position);
-						mesh.rotation.x = rotation;
+						mesh.rotation.x = rotation.x;
+						mesh.rotation.y = rotation.y;
 						mesh.scale.multiplyScalar(scale);
 						mesh.castShadow = true;
 						mesh.receiveShadow = true;
@@ -172,7 +193,8 @@
 						mesh2 = new THREE.Mesh( geometry, material );
 						mesh2.name = element;
 						mesh2.position.copy(position2);
-						mesh2.rotation.x = rotation;
+						mesh2.rotation.x = rotation.x;
+						mesh2.rotation.y = rotation.y;
 						mesh2.scale.multiplyScalar(scale);
 						
 						mesh2.castShadow = true;
@@ -202,26 +224,6 @@
 					}
 				}
 				gui.add( effectController, 'step', 1, models.length, 1).onChange(iterChanger);
-				
-				function changeModel() {
-	
-					effectController.step = 1;
-					currentIter = effectController.step;
-					textTag.innerText = "iter #0";
-	
-					for( let i = 0; i < models.length; i++ ) {
-
-						let selectedObject = scene.getObjectByName(models[i]);
-						// selectedObject.visible = false;
-						scene.remove( selectedObject );
-					}
-					
-					let selectedObject2 = scene.getObjectByName('ply1');
-					scene.remove( selectedObject2 );
-					gui.updateDisplay();
-					loadPly();
-					loadPly2();
-				}
 				
 				// Lights
 
@@ -253,14 +255,16 @@
 							scale = 1.5;
 							position.set(-0.5, -0.5, 0);
 							position2.set(0.5, -0.5, 0);
-							rotation = 0;
+							rotation.x = 0;
+							rotation.y = 0;
 							break;
 						case 'Cat':
 							currentPly = 1;
 							scale = 0.001;
 							position.set(-0.5, -0.4, 0);
 							position2.set(0.5, -0.4, 0);
-							rotation = 0;
+							rotation.x = 0;
+							rotation.y = THREE.MathUtils.degToRad(90);;
 							
 							break;
 						case 'Bluewhale':
@@ -268,22 +272,23 @@
 							scale = 0.0005;
 							position.set(-0.5, 0, 0);
 							position2.set(0.5, 0, 0);
-							rotation = THREE.MathUtils.degToRad(-90);
+							rotation.x = THREE.MathUtils.degToRad(-90);
+							rotation.y = 0;
 							break;
 						case 'Lion':
 							currentPly = 3;
 							scale = 0.0025;
 							position.set(-0.5, -0.4, 0);
 							position2.set(0.5, -0.4, 0);
-							rotation = THREE.MathUtils.degToRad(-90);
+							rotation.x = THREE.MathUtils.degToRad(-90);
+							rotation.y = 0;
 							break;
 						default:
 							break;
 
 					}
 					changeModel();
-					// const result = document.querySelector('.result');
-					// result.textContent = `You like ${event.target.value}`;
+
 				});
 
 			}
